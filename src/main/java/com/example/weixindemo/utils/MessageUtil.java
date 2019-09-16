@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.weixindemo.comment.weatherClient.WeatherInfo;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -65,10 +67,31 @@ public class MessageUtil {
 
         String result;
         String msgType = map.get("MsgType").toString();
+        String content = map.get("Content");
+        // 表情处理
+        EmojiUtil emojiUtil = new EmojiUtil();
+        String unicodeEmoji = emojiUtil.filterEmoji(content); //unicode编码的Emoji
         System.out.println("MsgType:" + msgType);
         if (msgType.toUpperCase().equals("TEXT")) {
-            result = buildTextMessage(map, "Xiaoshishu的小小窝, 请问客官想要点啥?");
-        } else if (msgType.toUpperCase().equals("IMAGE")) {
+            /*查询天气*/
+            if(content.contains("天气") && !"".equals(content)){
+                if(content.contains(":")){
+                    String cityName = content.substring(content.lastIndexOf(":")+1,content.length());
+                    WeatherInfo weather = new WeatherInfo();
+                    String weaInfo = weather.getWeatherInfo(cityName);
+                    result = buildTextMessage(map,weaInfo);
+                }else{
+                    String notice = "查询天气的正确姿势: 天气:城市名\n请客官输入正确的格式哟~";
+                    result = buildTextMessage(map,notice);
+                }
+            } else {
+                result = buildTextMessage(map, "Xiaoshishu的小小窝, 请问客官想要点啥?");
+            }
+        }else if (content.contains("/:")  || content.contains("\\:")  || content.contains("[") && content.contains("]") || unicodeEmoji.contains("\\")) {
+            // 表示处理
+            result = buildTextMessage(map,"客官发送的内容很特别哟~/:heart    " + content);
+        }
+        else if (msgType.toUpperCase().equals("IMAGE")) {
             // 图片
             result = buildImageMessage(map,null);
         } else if (msgType.toUpperCase().equals("VOICE")) {
@@ -175,6 +198,7 @@ public class MessageUtil {
                         "</xml>",
                 fromUserName,toUserName, getUtcTime(),media_id,title,description);
     }
+
 
     private static String buildTextMessage(Map<String,String> map,String content) {
 
