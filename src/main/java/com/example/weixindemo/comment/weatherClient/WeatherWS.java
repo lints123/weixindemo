@@ -32,7 +32,7 @@ public class WeatherWS
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("url：http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?wsdl");
+            url = new URL("url:http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

@@ -1,12 +1,13 @@
 package com.example.weixindemo.comment;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+
 import com.example.weixindemo.pojo.AccessToken;
 import com.example.weixindemo.pojo.AccessTokenInfo;
 import com.example.weixindemo.utils.NetWorkUtil;
 /*import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;*/
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +18,15 @@ public class AccessTokenServlet extends HttpServlet {
 
     static Logger logger = LoggerFactory.getLogger(AccessTokenServlet.class);
 
+    private static final String appId = "wxcb0b42bf43b4a153";//getInitParameter("appId");
+    private static final String appSecret = "400d620b0f6f1370a5ad89228e342894";//getInitParameter("appSecret");
+
     @Override
     public void init() throws ServletException {
-        logger.info("Xiaoshishu  >>> 启动AccessTokenServlet  <<<");
+        logger.info("小师叔  >>> 启动AccessTokenServlet  <<<");
         super.init();
 
-        final String appId = "wxcb0b42bf43b4a153";//getInitParameter("appId");
-        final String appSecret = "400d620b0f6f1370a5ad89228e342894";//getInitParameter("appSecret");
+
 
         new Thread(new Runnable() {
             @Override
@@ -31,7 +34,7 @@ public class AccessTokenServlet extends HttpServlet {
                 while (true) {
                     try {
                         //获取accessToken
-                        AccessTokenInfo.accessToken = getAccessToken(appId, appSecret);
+                        AccessTokenInfo.accessToken = getAccessToken();
                         //获取成功
                         if (AccessTokenInfo.accessToken != null) {
                             //获取到access_token 休眠7000秒,大约2个小时左右
@@ -54,7 +57,7 @@ public class AccessTokenServlet extends HttpServlet {
         }).start();
     }
 
-    private AccessToken getAccessToken(String appId,String appSecret) {
+    public static AccessToken getAccessToken() {
         NetWorkUtil netWorkUtil = new NetWorkUtil();
         /**
          * 接口地址为https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET，其中grant_type固定写为client_credential即可。
@@ -65,10 +68,10 @@ public class AccessTokenServlet extends HttpServlet {
         String result = netWorkUtil.getHttpsResponse(Url, "");
         System.out.println("获取到的access_token="+result);
         //使用FastJson将Json字符串解析成Json对象
-        JSONObject json = JSON.parseObject(result);
+        JSONObject json = JSONObject.fromObject(result);
         AccessToken token = new AccessToken();
         token.setTokenName(json.getString("access_token"));
-        token.setExpireSecond(json.getInteger("expires_in"));
+        token.setExpireSecond(json.getInt("expires_in"));
         return token;
 
     }

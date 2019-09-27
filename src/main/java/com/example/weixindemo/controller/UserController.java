@@ -1,10 +1,11 @@
 package com.example.weixindemo.controller;
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.example.weixindemo.comment.AccessTokenServlet;
 import com.example.weixindemo.utils.MessageUtil;
-import com.example.weixindemo.utils.tokenUtil;
+import com.example.weixindemo.utils.TokenUtil;
 import com.example.weixindemo.utils.uploadMediaApiUtil;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ public class UserController {
     @RequestMapping(value = "/validToken")
     public void validToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         if (request.getMethod().equals("GET")) {
-            logger.info("Xiaoshishu  >>> 校验token开始");
-            tokenUtil.checkSignature(request, response);
+            logger.info("小师叔  >>> 校验token开始");
+            TokenUtil.checkSignature(request, response);
 
         } else {
             // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
@@ -68,7 +69,7 @@ public class UserController {
     public void getAccessToken() throws ServletException {
         AccessTokenServlet servlet = new AccessTokenServlet();
         servlet.init();
-        System.out.println("Xiaoshishu  >>> 请求成功");
+        System.out.println("小师叔  >>> 请求成功");
     }
 
     @RequestMapping(value = "/uploadMedia")

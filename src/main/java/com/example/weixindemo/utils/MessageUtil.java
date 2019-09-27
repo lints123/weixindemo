@@ -23,7 +23,6 @@ public class MessageUtil {
 
     /**
      * 解析微信发送过来的请求（XML类型）
-     * 解析微信发送过来的请求（XML类型）
      * @param request
      * @return
      * @throws Exception
@@ -68,15 +67,15 @@ public class MessageUtil {
         String result;
         String msgType = map.get("MsgType").toString();
         String content = map.get("Content");
-        // 表情处理
+
         EmojiUtil emojiUtil = new EmojiUtil();
         String unicodeEmoji = emojiUtil.filterEmoji(content); //unicode编码的Emoji
         System.out.println("MsgType:" + msgType);
-        if (msgType.toUpperCase().equals("TEXT")) {
+        if ("TEXT".equals(msgType.toUpperCase())) {
             /*查询天气*/
             if(content.contains("天气") && !"".equals(content)){
-                if(content.contains(":")){
-                    String cityName = content.substring(content.lastIndexOf(":")+1,content.length());
+                if(content.contains("，")){
+                    String cityName = content.substring(content.lastIndexOf("，")+1,content.length());
                     WeatherInfo weather = new WeatherInfo();
                     String weaInfo = weather.getWeatherInfo(cityName);
                     result = buildTextMessage(map,weaInfo);
@@ -88,16 +87,16 @@ public class MessageUtil {
                 result = buildTextMessage(map, "Xiaoshishu的小小窝, 请问客官想要点啥?");
             }
         }else if (content.contains("/:")  || content.contains("\\:")  || content.contains("[") && content.contains("]") || unicodeEmoji.contains("\\")) {
-            // 表示处理
+            // 表情处理
             result = buildTextMessage(map,"客官发送的内容很特别哟~/:heart    " + content);
         }
-        else if (msgType.toUpperCase().equals("IMAGE")) {
+        else if ("IMAGE".equals(msgType.toUpperCase())) {
             // 图片
             result = buildImageMessage(map,null);
-        } else if (msgType.toUpperCase().equals("VOICE")) {
+        } else if ("VOICE".equals(msgType.toUpperCase())) {
             // 语音
             result = buildVoiceMessage(map);
-        } else if(msgType.toUpperCase().equals("VIDEO")){
+        } else if("VIDEO".equals(msgType.toUpperCase())){
             // 视频
             result = buildVideoMessage(map);
         } else {
@@ -132,7 +131,7 @@ public class MessageUtil {
         //String media_id = "UCWXNCogK5ub6YFFQf7QcEpvDIYLf3Zh0L5W9i4aEp2ehfnTrASeV59x3LMD88SS";
 
         /*返回用户发过来的图片*/
-        String media_id = map.get("MediaId");
+        String mediaId = map.get("MediaId");
         return String.format(
                 "<xml>" +
                         "<ToUserName><![CDATA[%s]]></ToUserName>" +
@@ -143,7 +142,7 @@ public class MessageUtil {
                         "   <MediaId><![CDATA[%s]]></MediaId>" +
                         "</Image>" +
                         "</xml>",
-                fromUserName,toUserName, getUtcTime(),media_id
+                fromUserName,toUserName, getUtcTime(),mediaId
         );
     }
 
@@ -156,7 +155,7 @@ public class MessageUtil {
         String fromUserName = map.get("FromUserName");
         String toUserName = map.get("ToUserName");
         /*返回用户发过来的语音*/
-        String media_id = map.get("MediaId");
+        String mediaId = map.get("MediaId");
         return String.format(
                 "<xml>" +
                         "<ToUserName><![CDATA[%s]]></ToUserName>" +
@@ -167,7 +166,7 @@ public class MessageUtil {
                         "   <MediaId><![CDATA[%s]]></MediaId>" +
                         "</Voice>" +
                         "</xml>",
-                fromUserName,toUserName, getUtcTime(),media_id
+                fromUserName,toUserName, getUtcTime(),mediaId
         );
     }
 
@@ -183,7 +182,7 @@ public class MessageUtil {
         String description = "客官您呐,现在肯定很开心,对不啦 嘻嘻?";
         /*返回用户发过来的视频*/
         //String media_id = map.get("MediaId");
-        String media_id = "hTl1of-w78xO-0cPnF_Wax1QrTwhnFpG1WBkAWEYRr9Hfwxw8DYKPYFX-22hAwSs";
+        String mediaId = "hTl1of-w78xO-0cPnF_Wax1QrTwhnFpG1WBkAWEYRr9Hfwxw8DYKPYFX-22hAwSs";
         return String.format(
                 "<xml>" +
                         "<ToUserName><![CDATA[%s]]></ToUserName>" +
@@ -196,7 +195,7 @@ public class MessageUtil {
                         "   <Description><![CDATA[%s]]></Description>" +
                         "</Video>" +
                         "</xml>",
-                fromUserName,toUserName, getUtcTime(),media_id,title,description);
+                fromUserName,toUserName, getUtcTime(),mediaId,title,description);
     }
 
 

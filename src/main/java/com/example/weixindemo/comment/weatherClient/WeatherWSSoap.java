@@ -33,7 +33,7 @@ public interface WeatherWSSoap {
     @WebResult(name = "getRegionDatasetResult", targetNamespace = "http://WebXml.com.cn/")
     @RequestWrapper(localName = "getRegionDataset", targetNamespace = "http://WebXml.com.cn/", className = "cn.com.webxml.GetRegionDataset")
     @ResponseWrapper(localName = "getRegionDatasetResponse", targetNamespace = "http://WebXml.com.cn/", className = "cn.com.webxml.GetRegionDatasetResponse")
-    public cn.com.webxml.GetRegionDatasetResponse.GetRegionDatasetResult getRegionDataset();
+    public GetRegionDatasetResponse.GetRegionDatasetResult getRegionDataset();
 
     /**
      * <br /><h3>����й�ʡ�ݡ�ֱϽ�С���������֮��Ӧ��ID</h3><p>����������ޣ��������ݣ�һά�ַ������顣</p><br />
@@ -70,7 +70,7 @@ public interface WeatherWSSoap {
     @WebResult(name = "getSupportCityDatasetResult", targetNamespace = "http://WebXml.com.cn/")
     @RequestWrapper(localName = "getSupportCityDataset", targetNamespace = "http://WebXml.com.cn/", className = "cn.com.webxml.GetSupportCityDataset")
     @ResponseWrapper(localName = "getSupportCityDatasetResponse", targetNamespace = "http://WebXml.com.cn/", className = "cn.com.webxml.GetSupportCityDatasetResponse")
-    public cn.com.webxml.GetSupportCityDatasetResponse.GetSupportCityDatasetResult getSupportCityDataset(
+    public GetSupportCityDatasetResponse.GetSupportCityDatasetResult getSupportCityDataset(
             @WebParam(name = "theRegionCode", targetNamespace = "http://WebXml.com.cn/")
                     String theRegionCode);
 

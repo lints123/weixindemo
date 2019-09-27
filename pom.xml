@@ -40,11 +40,25 @@
 		</dependency>
 
 		<!-- 转为JSON类型 -->
-		<dependency>
+	<!--	<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.60</version>
+		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+	<!--	<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
 		</dependency>
+-->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
 
 		<!--解析 XML -->
 		<dependency>
@@ -61,7 +75,6 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>

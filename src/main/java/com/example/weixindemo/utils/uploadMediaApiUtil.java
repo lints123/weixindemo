@@ -1,8 +1,8 @@
 package com.example.weixindemo.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.sun.javafx.scene.control.MultiplePropertyChangeListenerHandler;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -40,7 +40,7 @@ public class uploadMediaApiUtil {
         NetWorkUtil netHelper = new NetWorkUtil();
         String Url = String.format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", appId, appSecret);
         String result = netHelper.getHttpsResponse(Url, "");
-        JSONObject json = JSON.parseObject(result);
+        JSONObject json = JSONObject.fromObject(result);
         return json.getString("access_token");
     }
 
@@ -79,7 +79,7 @@ public class uploadMediaApiUtil {
             int status = httpClient.executeMethod(postMethod);
             if (status == HttpStatus.SC_OK) {
                 String text = postMethod.getResponseBodyAsString();
-                jsonObject = JSONObject.parseObject(text);
+                jsonObject = JSONObject.fromObject(text);
             } else {
                 System.out.println("upload Media failure status is:" + status);
             }
