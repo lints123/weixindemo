@@ -56,6 +56,18 @@ public class WeixinUtil {
         System.out.println(jsonObject);
 
         return result;
+    }
+
+    public static int selectMenu(String accessToken){
+
+        int result = 0;
+        String url = WeixinConstants.WX_URL_SELECT_MENU.replace("ACCESS_TOKEN",accessToken);
+
+        JSONObject jsonObject = HttpUtil.httpRequest(url,"GET",null);
+
+        System.out.println(jsonObject);
+
+        return result;
 
     }
 

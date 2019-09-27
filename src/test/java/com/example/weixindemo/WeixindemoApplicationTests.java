@@ -36,7 +36,10 @@ public class WeixindemoApplicationTests {
 		}*/
 
 		// 删除菜单
-		WeixinUtil.deleteMenu(accessToken.getTokenName());
+		// WeixinUtil.deleteMenu(accessToken.getTokenName());
+
+		// 查询菜单
+		// WeixinUtil.selectMenu(accessToken.getTokenName());
 
 	}
 

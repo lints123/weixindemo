@@ -12,6 +12,8 @@ public class WeixinConstants {
     // 删除所有菜单
     public static final String WX_URL_DELETE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 
+    // 查询所有菜单
+    public static final String WX_URL_SELECT_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
 
 
     // 公众号appId
