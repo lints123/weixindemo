@@ -21,7 +21,7 @@ public class WeixindemoApplicationTests {
 
 	public static void main(String[] args) {
 
-		// 创建菜单：参考网址 https://blog.csdn.net/weixin_39220472/article/details/83932231
+		// 创建菜单：参考网址
 		// AccessToken accessToken = TokenUtil.getAccessToken(WeixinConstants.appId,WeixinConstants.appSecret);
 		AccessToken accessToken = new AccessToken();
 		accessToken.setTokenName("25_C-zOM8aYy6tAcrAIiJsWBYisiqBMFjRywyHcOVnGXxRHkxLgcRYRhaZ6IX4WSEuTntXsJu32L_zig1AiHlIA3Ky-NcGP8FGC4PP86Rli23okcfpoVxBWM9QhbtB6hFO9ONzCZYty1uWm-ndvKYVbAAACQN");
