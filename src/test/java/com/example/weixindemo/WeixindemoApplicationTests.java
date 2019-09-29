@@ -24,8 +24,8 @@ public class WeixindemoApplicationTests {
 		// 创建菜单：参考网址
 		// AccessToken accessToken = TokenUtil.getAccessToken(WeixinConstants.appId,WeixinConstants.appSecret);
 		AccessToken accessToken = new AccessToken();
-		accessToken.setTokenName("25_C-zOM8aYy6tAcrAIiJsWBYisiqBMFjRywyHcOVnGXxRHkxLgcRYRhaZ6IX4WSEuTntXsJu32L_zig1AiHlIA3Ky-NcGP8FGC4PP86Rli23okcfpoVxBWM9QhbtB6hFO9ONzCZYty1uWm-ndvKYVbAAACQN");
-		/*if (null != accessToken) {
+		accessToken.setTokenName("25_s33sWmfT3_OKF6JtWIffn0MdbyNBQo5XqzT3hxQ9UNCw3xEN4CxzEF9a6-T3sTtivT9Rhcm6FLbX-7fxxkEaRjFO8d80jf2i5tB9G40HDJ8nYNzSLvhfsJLLT1JrbwzIKJFe5172LwCr3ufiNRYgACAAEL");
+		if (null != accessToken) {
 			int result = WeixinUtil.createMenu(getMenu(),accessToken.getTokenName());
 
 			if (0 == result) {
@@ -33,7 +33,7 @@ public class WeixindemoApplicationTests {
 			} else {
 				System.out.println("菜单创建失败，错误码：" + result);
 			}
-		}*/
+		}
 
 		// 删除菜单
 		// WeixinUtil.deleteMenu(accessToken.getTokenName());
@@ -87,6 +87,11 @@ public class WeixindemoApplicationTests {
 		btn33.setType("click");
 		btn33.setKey("33");
 
+		CommonButton btn34 = new CommonButton();
+		btn34.setName("天气预报");
+		btn34.setType("click");
+		btn34.setKey("34");
+
 
 		/**
 		 * 微信：  mainBtn1,mainBtn2,mainBtn3底部的三个一级菜单。
@@ -104,7 +109,7 @@ public class WeixindemoApplicationTests {
 
 		ComplexButton mainBtn3 = new ComplexButton();
 		mainBtn3.setName("更多体验");
-		mainBtn3.setSub_button(new CommonButton[] {  btn33 });
+		mainBtn3.setSub_button(new CommonButton[] {  btn33,btn34 });
 
 
 

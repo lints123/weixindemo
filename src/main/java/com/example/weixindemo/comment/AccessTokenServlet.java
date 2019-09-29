@@ -18,50 +18,20 @@ public class AccessTokenServlet extends HttpServlet {
 
     static Logger logger = LoggerFactory.getLogger(AccessTokenServlet.class);
 
-    private static final String appId = "wxcb0b42bf43b4a153";//getInitParameter("appId");
+  /*  private static final String appId = "wxcb0b42bf43b4a153";//getInitParameter("appId");
     private static final String appSecret = "400d620b0f6f1370a5ad89228e342894";//getInitParameter("appSecret");
-
-    @Override
+*/
+   /* @Override
     public void init() throws ServletException {
         logger.info("小师叔  >>> 启动AccessTokenServlet  <<<");
         super.init();
+    }*/
 
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        //获取accessToken
-                        AccessTokenInfo.accessToken = getAccessToken();
-                        //获取成功
-                        if (AccessTokenInfo.accessToken != null) {
-                            //获取到access_token 休眠7000秒,大约2个小时左右
-                            Thread.sleep(7000 * 1000);
-                        } else {
-                            //获取失败
-                            Thread.sleep(1000 * 3); //获取的access_token为空 休眠3秒
-                        }
-                    } catch (Exception e) {
-                        System.out.println("发生异常：" + e.getMessage());
-                        e.printStackTrace();
-                        try {
-                            Thread.sleep(1000 * 10); //发生异常休眠1秒
-                        } catch (Exception e1) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }).start();
-    }
-
-    public static AccessToken getAccessToken() {
+   /* public static AccessToken getAccessToken() {
         NetWorkUtil netWorkUtil = new NetWorkUtil();
-        /**
+        *//**
          * 接口地址为https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET，其中grant_type固定写为client_credential即可。
-         */
+         *//*
         String Url = String.format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", appId, appSecret);
         //此请求为https的get请求，返回的数据格式为{"access_token":"ACCESS_TOKEN","expires_in":7200}
         System.out.println(Url);
@@ -75,5 +45,5 @@ public class AccessTokenServlet extends HttpServlet {
         return token;
 
     }
-
+*/
 }

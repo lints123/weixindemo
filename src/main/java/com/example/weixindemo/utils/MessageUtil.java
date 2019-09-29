@@ -3,6 +3,8 @@ package com.example.weixindemo.utils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,16 +13,32 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.weixindemo.comment.weatherClient.WeatherInfo;
+import com.example.weixindemo.constants.WeixinConstants;
+import com.example.weixindemo.pojo.clisend.BaseMessage;
+import com.example.weixindemo.pojo.clisend.Image;
+
+import com.example.weixindemo.pojo.clisend.ImageMessage;
+import com.example.weixindemo.pojo.clisend.TextMessage;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+
+import org.apache.commons.beanutils.ConvertUtils;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
+
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 处理消息的工具类
  */
 public class MessageUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(MessageUtil.class);
     /**
      * 解析微信发送过来的请求（XML类型）
      * @param request
@@ -53,10 +71,151 @@ public class MessageUtil {
 
             // 释放资源
             inputStream.close();
+            inputStream = null;
 
             return map;
         }
         return null;
+    }
+
+    /**
+    * 扩展xstream，使其支持CDATA
+    * @author lints
+    * @date 2019-09-29
+    */
+    private static XStream xStream = new XStream(new XppDriver(){
+       @Override
+       public HierarchicalStreamWriter createWriter(Writer out) {
+           return new PrettyPrintWriter(out) {
+               // 对所有xml节点的转换都增加CDATA标记
+               boolean cdata = true;
+
+               @Override
+               @SuppressWarnings("unchecked")
+               public void startNode(String name, Class clazz) {
+                   System.out.println("----"+name);
+                   super.startNode(name, clazz);
+               }
+
+               @Override
+               protected void writeText(QuickWriter writer, String text) {
+                   if (cdata) {
+                       writer.write("<![CDATA[");
+                       writer.write(text);
+                       writer.write("]]>");
+                   } else {
+                       writer.write(text);
+                   }
+               }
+           };
+       }
+    });
+
+/*
+    public static String messageToXml(Object object){
+        logger.info("小师叔 >>> 当前类 class = [{}]",object.getClass());
+
+        xStream.alias("xml",object.getClass());
+        logger.info("1");
+        return xStream.toXML(object);
+    }*/
+
+    public static String messageToXml(Object object) {
+        xStream.alias("xml", object.getClass());
+        return xStream.toXML(object);
+    }
+
+
+    public static String processRequest(HttpServletRequest request) {
+        String respXml = null;
+
+        Date date = new Date();
+        // 默认返回的文本消息内容
+        String respContent = "未知的消息类型!";
+        try{
+            // 解析发送过来的xml方法
+            Map<String,String> requestMap = parseXml(request);
+            // 消息类型
+            assert requestMap != null;
+            String msgType = requestMap.get("MsgType");
+
+            // 发送方账号
+            String fromUserName = requestMap.get("FromUserName");
+
+            // 开发者微信号
+            String toUserName = requestMap.get("ToUserName");
+
+            BaseMessage baseMessage = new BaseMessage();
+            baseMessage.setToUserName(fromUserName);
+            baseMessage.setFromUserName(toUserName);
+            baseMessage.setCreateTime(date.getTime());
+            baseMessage.setMsgType(msgType);
+            if (msgType.equalsIgnoreCase(WeixinConstants.RESP_MESSAGE_TYPE_TEXT)) {
+
+                // 发送给公众号，toUserName存你的openId，FromUserName存公众号的openId
+                TextMessage textMessage = new TextMessage();
+                respContent = "当前发送的是文本内容";
+                textMessage.setContent(respContent);
+                ConvertUtil.toBean(baseMessage,textMessage);
+                respXml = messageToXml(textMessage);
+
+            } else if (msgType.equalsIgnoreCase(WeixinConstants.RESP_MESSAGE_TYPE_IMAGE)) {
+                // 返回用户发送过来的图片
+                String mediaId = requestMap.get("MediaId");
+
+                ImageMessage imageMessage = new ImageMessage();
+                Image image = new Image();
+                image.setMediaId(mediaId);
+                imageMessage.setImage(image);
+
+                ConvertUtil.toBean(baseMessage,imageMessage);
+
+                respXml = messageToXml(imageMessage);
+
+            } else if (msgType.equalsIgnoreCase(WeixinConstants.REQ_MESSAGE_TYPE_EVENT)) {
+                String event = requestMap.get("Event");
+                if (event.equalsIgnoreCase(WeixinConstants.EVENT_TYPE_SUBSCRIBE)) {
+                    // 是否被关注
+                    logger.info("小师叔  >>> 关注公众号");
+                    TextMessage textMessage = new TextMessage();
+                    textMessage.setContent("你来了？久等了。欢迎来到小师叔的公众号");
+                    ConvertUtil.toBean(baseMessage,textMessage);
+                    respXml = messageToXml(textMessage);
+
+                } else if (event.equalsIgnoreCase(WeixinConstants.EVENT_TYPE_CLICK)) {
+                    // 菜单点击事件
+                    logger.info("小师叔  >>> 菜单点击事件");
+                    String eventKey = requestMap.get("EventKey");
+                    if ("33".equals(eventKey)) {
+                        logger.info("小师叔  >>> 幽默笑话");
+                        TextMessage textMessage = new TextMessage();
+                        textMessage.setContent("点击幽默笑话事件");
+                        textMessage.setMsgType(WeixinConstants.RESP_MESSAGE_TYPE_TEXT);
+                        ConvertUtil.toBean(baseMessage,textMessage);
+                        respXml = messageToXml(textMessage);
+
+                    } else if ("34".equalsIgnoreCase(eventKey)) {
+                        logger.info("小师叔  >>> 天气预报，默认查询广州");
+                        String cityName = "广州";
+                        WeatherInfo weather = new WeatherInfo();
+                        String weaInfo = weather.getWeatherInfo(cityName);
+                        TextMessage textMessage = new TextMessage();
+                        textMessage.setContent(weaInfo);
+                        textMessage.setMsgType(WeixinConstants.RESP_MESSAGE_TYPE_TEXT);
+                        ConvertUtil.toBean(baseMessage,textMessage);
+                        respXml = messageToXml(textMessage);
+                    }
+                }
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return respXml;
+    }
+
+    public static void main(String[] args) {
+
     }
 
     /**
@@ -220,6 +379,7 @@ public class MessageUtil {
                 fromUserName, toUserName, getUtcTime(), content);
 
     }
+
 
     private static String getUtcTime() {
         Date dt = new Date();// 如果不需要格式,可直接用dt,dt就是当前系统时间

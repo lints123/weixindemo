@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -25,13 +28,11 @@ import java.util.Map;
 @RestController
 public class UserController {
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
-
-
+    private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(value = "/validToken")
     public void validToken(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-        if (request.getMethod().equals("GET")) {
+        if ("GET".equals(request.getMethod())) {
             logger.info("小师叔  >>> 校验token开始");
             TokenUtil.checkSignature(request, response);
 
@@ -58,7 +59,39 @@ public class UserController {
                 System.out.println("发生异常：" + e.getMessage());
             }
         }
+    }
 
+    /**
+     * 验证微信
+     *
+     * @param
+     * @return
+     * @author lints
+     * @date 2019-09-29
+     */
+    @RequestMapping(value = "toAppoin", method = RequestMethod.GET)
+    public void valieToken(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("小师叔  >>> 校验token开始。。。");
+        TokenUtil.checkSignature(request, response);
+    }
+
+    @RequestMapping(value = "toAppoin", method = RequestMethod.POST)
+    public void doPost(HttpServletRequest request, HttpServletResponse response){
+        logger.info("小师叔  >>> 处理微信发来的消息。。。");
+
+        // 消息的接收、处理、响应
+        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+        try {
+            request.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            // 处理消息
+            String respXml = MessageUtil.processRequest(request);
+            logger.info("respXml = {}",respXml);
+            // 响应消息
+            response.getWriter().println(respXml);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,16 +106,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "/uploadMedia")
-    public void uploadMedia(){
+    public void uploadMedia() {
         uploadMediaApiUtil uploadMediaApiUtil = new uploadMediaApiUtil();
         String appId = "wxcb0b42bf43b4a153";
         String appSecret = "400d620b0f6f1370a5ad89228e342894";
-        String accessToken = uploadMediaApiUtil.getAccessToken(appId,appSecret);
+        String accessToken = uploadMediaApiUtil.getAccessToken(appId, appSecret);
 
         String filePath = "C:\\Users\\Public\\Pictures\\Sample Pictures\\2.jpg";
         File file = new File(filePath);
         String type = "IMAGE";
-        JSONObject jsonObject = uploadMediaApiUtil.uploadMedia(file,accessToken,type);
+        JSONObject jsonObject = uploadMediaApiUtil.uploadMedia(file, accessToken, type);
         System.out.println(jsonObject.toString());
 
         /*
@@ -92,6 +125,4 @@ public class UserController {
 {"media_id":"2kNml8Us7xn7qsXb2KlZ3WHQWidU6nriYOjCFnK5q1HG4ILQbq8wtjPGb5Gtt0xr","created_at":1568615698,"type":"image"}
         * */
     }
-
-
 }

@@ -106,6 +106,7 @@ public class TokenUtil {
 
         String url = WeixinConstants.WX_URL_ACCESSTOKEN.replace("APPID", appId);
         url = url.replace("APPSECRET", appSecret);
+
         logger.info("小师叔 >>> 当前请求的URL = [{}]", url);
 
         // 此请求为https的get请求，返回的数据格式为{"access_token":"ACCESS_TOKEN","expires_in":7200}
