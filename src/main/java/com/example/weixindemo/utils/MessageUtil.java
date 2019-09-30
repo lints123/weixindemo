@@ -183,8 +183,10 @@ public class MessageUtil {
                     respXml = messageToXml(textMessage);
 
                 } else if (event.equalsIgnoreCase(WeixinConstants.EVENT_TYPE_CLICK)) {
+
                     // 菜单点击事件
                     logger.info("小师叔  >>> 菜单点击事件");
+
                     String eventKey = requestMap.get("EventKey");
                     if ("33".equals(eventKey)) {
                         logger.info("小师叔  >>> 幽默笑话");
@@ -195,12 +197,25 @@ public class MessageUtil {
                         respXml = messageToXml(textMessage);
 
                     } else if ("34".equalsIgnoreCase(eventKey)) {
+
                         logger.info("小师叔  >>> 天气预报，默认查询广州");
+
                         String cityName = "广州";
                         WeatherInfo weather = new WeatherInfo();
                         String weaInfo = weather.getWeatherInfo(cityName);
                         TextMessage textMessage = new TextMessage();
                         textMessage.setContent(weaInfo);
+                        textMessage.setMsgType(WeixinConstants.RESP_MESSAGE_TYPE_TEXT);
+                        ConvertUtil.toBean(baseMessage,textMessage);
+                        respXml = messageToXml(textMessage);
+                    }
+                } else if (event.equalsIgnoreCase(WeixinConstants.EVENT_TYPE_SCANCODE_PUSH)) {
+                    String eventKey = requestMap.get("EventKey");
+                    if ("35".equalsIgnoreCase(eventKey)) {
+
+                        logger.info("小师叔  >>> 扫码推事件");
+                        TextMessage textMessage = new TextMessage();
+                        textMessage.setContent("小师叔  >>> 扫码推事件。。。");
                         textMessage.setMsgType(WeixinConstants.RESP_MESSAGE_TYPE_TEXT);
                         ConvertUtil.toBean(baseMessage,textMessage);
                         respXml = messageToXml(textMessage);

@@ -58,6 +58,11 @@ public class WeixinUtil {
         return result;
     }
 
+    /**
+    * 获取所有菜单
+    * @author lints
+    * @date 2019-09-30
+    */
     public static int selectMenu(String accessToken){
 
         int result = 0;
@@ -70,5 +75,19 @@ public class WeixinUtil {
         return result;
 
     }
+
+    public static int getUserInfo(String accessToken,String openId){
+        int result = 0;
+
+        String url = WeixinConstants.WX_URL_USERINFO.replace("ACCESS_TOKEN",accessToken).replace("OPENID",openId);
+
+        JSONObject jsonObject = HttpUtil.httpRequest(url,"GET",null);
+
+        System.out.println(jsonObject);
+
+        return result;
+    }
+
+
 
 }

@@ -15,11 +15,16 @@ public class WeixinConstants {
     // 查询所有菜单
     public static final String WX_URL_SELECT_MENU = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
 
+    // 获取用户基本信息
+    public static final String WX_URL_USERINFO = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+
 
     // 公众号appId
     public static final String appId = "wxb403973927b47a2a";//getInitParameter("appId");
 
     public static final String appSecret = "e964303502b605785dd66a7c66870d21";//getInitParameter("appSecret");
+
+    public static final String openId = "oPx5vv1OxQpJBMCrO22Y2wWovqRA";
 
 
     // 请求消息类型：文本
@@ -50,6 +55,9 @@ public class WeixinConstants {
     public static final String EVENT_TYPE_LOCATION = "LOCATION";
     // 事件类型：CLICK(自定义菜单)
     public static final String EVENT_TYPE_CLICK = "CLICK";
+
+    // 事件类型：扫码推事件
+    public static final String EVENT_TYPE_SCANCODE_PUSH = "scancode_push";
 
     // 响应消息类型：文本
     public static final String RESP_MESSAGE_TYPE_TEXT = "text";
